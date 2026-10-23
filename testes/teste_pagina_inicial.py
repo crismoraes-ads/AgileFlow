@@ -1,8 +1,7 @@
-
 from aplicacao import criar_aplicacao
 
 
-def teste_pagina_inicial():
+def test_pagina_inicial():
     aplicacao = criar_aplicacao()
     cliente = aplicacao.test_client()
 
