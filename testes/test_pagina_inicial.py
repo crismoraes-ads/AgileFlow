@@ -85,3 +85,23 @@ def test_atualizar_status_invalido():
 
     assert resposta.status_code == 400
 
+def test_formulario_registrar_atualizacao():
+    app = criar_aplicacao()
+    resposta = app.test_client().get("/demandas/1/atualizacoes")
+
+    assert resposta.status_code == 200
+    assert b"Registrar atualiza" in resposta.data
+
+
+def test_rejeitar_comentario_vazio():
+    app = criar_aplicacao()
+    resposta = app.test_client().post(
+        "/demandas/1/atualizacoes",
+        data={"comentario": "   "},
+    )
+
+    assert resposta.status_code == 400
+    assert b"Comentario obrigatorio" in resposta.data or (
+        b"Coment" in resposta.data
+    )
+
