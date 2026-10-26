@@ -1,3 +1,4 @@
+
 import os
 
 import psycopg
@@ -24,6 +25,7 @@ def criar_tabela_demandas():
                 status VARCHAR(30) NOT NULL DEFAULT 'Aberta'
             )
         """)
+
 
 def criar_tabela_atualizacoes():
     with obter_conexao() as conexao:
