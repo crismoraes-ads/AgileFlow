@@ -24,3 +24,15 @@ def criar_tabela_demandas():
                 status VARCHAR(30) NOT NULL DEFAULT 'Aberta'
             )
         """)
+
+def criar_tabela_atualizacoes():
+    with obter_conexao() as conexao:
+        conexao.execute("""
+            CREATE TABLE IF NOT EXISTS atualizacoes (
+                id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+                demanda_id INTEGER NOT NULL REFERENCES demandas(id)
+                    ON DELETE CASCADE,
+                comentario VARCHAR(1000) NOT NULL,
+                data_atualizacao DATE NOT NULL DEFAULT CURRENT_DATE
+            )
+        """)
