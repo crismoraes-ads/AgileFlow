@@ -12,3 +12,15 @@ def obter_conexao():
         )
 
     return psycopg.connect(url_banco)
+
+
+def criar_tabela_demandas():
+    with obter_conexao() as conexao:
+        conexao.execute("""
+            CREATE TABLE IF NOT EXISTS demandas (
+                id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+                titulo VARCHAR(120) NOT NULL,
+                descricao VARCHAR(1000) NOT NULL,
+                status VARCHAR(30) NOT NULL DEFAULT 'Aberta'
+            )
+        """)
