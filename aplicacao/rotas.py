@@ -92,3 +92,28 @@ def registrar_demanda():
     </body>
     </html>
     """
+    
+@rotas.route("/demandas/<int:id_demanda>/status", methods=["POST"])
+def atualizar_status(id_demanda):
+    novo_status = request.form.get("status", "").strip()
+    status_permitidos = {"Aberta", "Em andamento", "Concluída"}
+
+    if novo_status not in status_permitidos:
+        return "Status inválido.", 400
+
+    with obter_conexao() as conexao:
+        resultado = conexao.execute(
+            """
+            UPDATE demandas
+            SET status = %s
+            WHERE id = %s
+            RETURNING id
+            """,
+            (novo_status, id_demanda),
+        ).fetchone()
+
+    if resultado is None:
+        return "Demanda não encontrada.", 404
+
+    return redirect(url_for("rotas.consultar_demandas"))
+
