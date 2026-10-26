@@ -117,3 +117,50 @@ def atualizar_status(id_demanda):
 
     return redirect(url_for("rotas.consultar_demandas"))
 
+@rotas.route(
+    "/demandas/<int:id_demanda>/atualizacoes",
+    methods=["GET", "POST"],
+)
+def registrar_atualizacao(id_demanda):
+    if request.method == "POST":
+        comentario = request.form.get("comentario", "").strip()
+
+        if not comentario or len(comentario) > 1000:
+            return "Comentário obrigatório (máximo de 1000 caracteres).", 400
+
+        with obter_conexao() as conexao:
+            demanda = conexao.execute(
+                "SELECT id FROM demandas WHERE id = %s",
+                (id_demanda,),
+            ).fetchone()
+
+            if demanda is None:
+                return "Demanda não encontrada.", 404
+
+            conexao.execute(
+                """
+                INSERT INTO atualizacoes (demanda_id, comentario)
+                VALUES (%s, %s)
+                """,
+                (id_demanda, comentario),
+            )
+
+        return redirect(url_for("rotas.consultar_demandas"))
+
+    return f"""
+    <!DOCTYPE html>
+    <html lang="pt-BR">
+    <head><meta charset="UTF-8"><title>Registrar atualização</title></head>
+    <body>
+        <h1>Registrar atualização</h1>
+        <form method="post">
+            <label for="comentario">Comentário / Atualização</label><br>
+            <textarea id="comentario" name="comentario"
+                      maxlength="1000" required></textarea><br><br>
+            <button type="submit">Salvar atualização</button>
+        </form>
+        <a href="/">Voltar ao início</a>
+    </body>
+    </html>
+    """
+
