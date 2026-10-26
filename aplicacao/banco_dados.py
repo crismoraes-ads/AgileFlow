@@ -12,7 +12,10 @@ def obter_conexao():
             "A variável de ambiente DATABASE_URL não foi configurada."
         )
 
-    return psycopg.connect(url_banco)
+   return psycopg.connect(
+    url_banco,
+    row_factory=psycopg.rows.dict_row,
+)
 
 
 def criar_tabela_demandas():
