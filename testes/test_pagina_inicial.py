@@ -1,3 +1,5 @@
+from importlib import import_module
+
 from aplicacao import criar_aplicacao
 
 
@@ -9,7 +11,7 @@ def test_pagina_inicial():
 
 
 def test_consultar_demandas(monkeypatch):
-    from aplicacao import rotas
+    modulo_rotas = import_module("aplicacao.rotas")
 
     class BancoFalso:
         def __enter__(self):
@@ -25,7 +27,7 @@ def test_consultar_demandas(monkeypatch):
 
             return Resultado()
 
-    monkeypatch.setattr(rotas, "obter_conexao", BancoFalso)
+    monkeypatch.setattr(modulo_rotas, "obter_conexao", BancoFalso)
 
     app = criar_aplicacao()
     resposta = app.test_client().get("/demandas")
@@ -37,6 +39,5 @@ def test_consultar_demandas(monkeypatch):
 def test_formulario_nova_demanda():
     app = criar_aplicacao()
     resposta = app.test_client().get("/demandas/nova")
-
     assert resposta.status_code == 200
     assert b"Registrar demanda" in resposta.data
